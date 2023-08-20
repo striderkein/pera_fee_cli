@@ -14,6 +14,8 @@ fee_senior = 800
 fee_senior_sp = 500
 DISCOUNT_SENIOR = fee_senior - fee_senior_sp
 
+GROUP_DISCONT_RATE = 0.9
+
 total_fee = 0
 raw_fee = 0
 details = 'なし'
@@ -114,7 +116,10 @@ while !process_end
 
 	clear_console()
 
-	# TODO: 団体割引 → 10人以上で10%割引（子供は 0.5 人換算とする）
+	# 団体割引 → 10人以上で10%割引（子供は 0.5 人換算とする）
+	total_person = adult_normal.to_i + child_normal.to_i / 2 + senior_normal.to_i
+	is_group_discount = total_person >= 10
+
 	# TODO: 夕方料金 → 17時以降は 100円 引き
 	#   - 現在時刻を取得して変数nowに代入 → now = Time.now
 	# TODO: 休日料金 → 土日祝は 200円 増し
@@ -130,6 +135,9 @@ while !process_end
 		raw_fee_adult - discount_adult_total +
 		raw_fee_child - discount_child_total +
 		raw_fee_senior - discount_senior_total
+	if is_group_discount then
+		total_fee *= GROUP_DISCONT_RATE
+	end
 	raw_fee = total_fee
 
 	details = "|        |   通常   |   割引   |\n+--------+----------+----------+\n|  大人  |  #{adult_normal} 名様 |  #{adult_special} 名様 |\n|  子供  |  #{child_normal} 名様 |  #{child_special} 名様 |\n| シニア |  #{senior_normal} 名様 |  #{senior_special} 名様 |\n+--------+----------+----------+"
