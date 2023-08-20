@@ -6,13 +6,13 @@
 # 定数
 fee_adult = 1000
 fee_adult_sp = 600
-dicount_adult = fee_adult - fee_adult_sp
+DISCOUNT_ADULT = fee_adult - fee_adult_sp
 fee_child = 500
 fee_child_sp = 400
-dicount_child = fee_child - fee_child_sp
+DISCOUNT_CHILD = fee_child - fee_child_sp
 fee_senior = 800
 fee_senior_sp = 500
-dicount_senior = fee_senior - fee_senior_sp
+DISCOUNT_SENIOR = fee_senior - fee_senior_sp
 
 total_fee = 0
 raw_fee = 0
@@ -49,7 +49,7 @@ while !process_end
 	# TODO: 現在時刻を取得して、変数nowに代入 → now = Time.now
 
 	# TODO: 全てのチケット料金を計算して、変数total_feeに代入
-	total_fee = adult_normal.to_i * fee_adult - adult_special.to_i * dicount_adult + child_normal.to_i * fee_child - child_special.to_i * dicount_child + senior_normal.to_i * fee_senior - senior_special.to_i * dicount_senior
+	total_fee = adult_normal.to_i * fee_adult - adult_special.to_i * DISCOUNT_ADULT + child_normal.to_i * fee_child - child_special.to_i * DISCOUNT_CHILD + senior_normal.to_i * fee_senior - senior_special.to_i * DISCOUNT_SENIOR
 	raw_fee = total_fee
 
 	# puts "大人:#{adult_normal}\n子供:#{child_normal}\nシニア:#{senior_normal}\n大人（特別）:#{adult_special}\n子供（特別）:#{child_special}\nシニア（特別）:#{senior_special}"
