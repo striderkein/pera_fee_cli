@@ -17,39 +17,59 @@ total_fee = 10000
 raw_fee = 10000
 details = 'なし'
 
-puts 'チケット料金を計算します'
+process_end = false
 
-# 人数を入力
-# 大人
-print '大人の人数を入力> '
-adult_normal = gets.chomp
-print 'チラシの枚数（大人）を入力> '
-adult_special = gets.chomp
+while !process_end
+	puts "########################\nチケット料金を計算します\n########################"
 
-# 子供
-print '子供の人数を入力> '
-child_normal = gets.chomp
-print 'チラシの枚数（子供）を入力> '
-child_special = gets.chomp
+	# 人数を入力
+	# 大人
+	print '大人の人数を入力> '
+	adult_normal = gets.chomp
+	print 'チラシの枚数（大人）を入力> '
+	adult_special = gets.chomp
 
-# シニア
-print 'シニアの人数を入力> '
-senior_normal = gets.chomp
-print 'チラシの枚数（シニア）を入力> '
-senior_special = gets.chomp
+	# 子供
+	print '子供の人数を入力> '
+	child_normal = gets.chomp
+	print 'チラシの枚数（子供）を入力> '
+	child_special = gets.chomp
 
-# TODO: 団体割引 → 10人以上で10%割引（子供は 0.5 人換算とする）
-# TODO: 夕方料金 → 17時以降は 100円 引き
-# TODO: 休日料金 → 土日祝は 200円 増し
-# TODO: 月水割引 → 月曜と水曜は 100円 引き
-# TODO: 現在時刻を取得して、変数nowに代入 → now = Time.now
+	# シニア
+	print 'シニアの人数を入力> '
+	senior_normal = gets.chomp
+	print 'チラシの枚数（シニア）を入力> '
+	senior_special = gets.chomp
 
-# TODO: 全てのチケット料金を計算して、変数total_feeに代入
-# total_fee = adult_normal.to_i * fee_adult + adult_special.to_i * fee_adult_sp + child_normal.to_i * fee_child + child_special.to_i * fee_child_sp + senior_normal.to_i * fee_senior + senior_special.to_i * fee_senior_sp
-# total_fee = adult_normal.to_i * fee_adult + adult_special.to_i * dicount_adult + child_normal.to_i * fee_child + child_special.to_i * dicount_child + senior_normal.to_i * fee_senior + senior_special.to_i * dicount_senior
-total_fee = adult_normal.to_i * fee_adult - adult_special.to_i * dicount_adult + child_normal.to_i * fee_child - child_special.to_i * dicount_child + senior_normal.to_i * fee_senior - senior_special.to_i * dicount_senior
-raw_fee = total_fee
+	# TODO: 団体割引 → 10人以上で10%割引（子供は 0.5 人換算とする）
+	# TODO: 夕方料金 → 17時以降は 100円 引き
+	# TODO: 休日料金 → 土日祝は 200円 増し
+	# TODO: 月水割引 → 月曜と水曜は 100円 引き
+	# TODO: 現在時刻を取得して、変数nowに代入 → now = Time.now
 
-# puts "大人:#{adult_normal}\n子供:#{child_normal}\nシニア:#{senior_normal}\n大人（特別）:#{adult_special}\n子供（特別）:#{child_special}\nシニア（特別）:#{senior_special}"
-# TODO: impl
-puts "販売合計金額:#{total_fee}\n金額変更前合計金額:#{raw_fee}\n金額変更明細:#{details}"
+	# TODO: 全てのチケット料金を計算して、変数total_feeに代入
+	# total_fee = adult_normal.to_i * fee_adult + adult_special.to_i * fee_adult_sp + child_normal.to_i * fee_child + child_special.to_i * fee_child_sp + senior_normal.to_i * fee_senior + senior_special.to_i * fee_senior_sp
+	# total_fee = adult_normal.to_i * fee_adult + adult_special.to_i * dicount_adult + child_normal.to_i * fee_child + child_special.to_i * dicount_child + senior_normal.to_i * fee_senior + senior_special.to_i * dicount_senior
+	total_fee = adult_normal.to_i * fee_adult - adult_special.to_i * dicount_adult + child_normal.to_i * fee_child - child_special.to_i * dicount_child + senior_normal.to_i * fee_senior - senior_special.to_i * dicount_senior
+	raw_fee = total_fee
+
+	# puts "大人:#{adult_normal}\n子供:#{child_normal}\nシニア:#{senior_normal}\n大人（特別）:#{adult_special}\n子供（特別）:#{child_special}\nシニア（特別）:#{senior_special}"
+	# TODO: impl
+	puts "販売合計金額:#{total_fee}\n金額変更前合計金額:#{raw_fee}\n金額変更明細:#{details}\n"
+
+	while true
+		print "処理を継続しますか？(yes | no)> "
+		answer = gets.chomp
+		if answer == 'yes' then
+			break
+		elsif answer == 'no' then
+			process_end = true
+			break
+		else
+			puts 'yes か no を入力してください'
+			next
+		end
+	end
+end
+
+puts '終了します'
