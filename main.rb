@@ -14,8 +14,8 @@ fee_senior = 800
 fee_senior_sp = 500
 dicount_senior = fee_senior - fee_senior_sp
 
-total_fee = 10000
-raw_fee = 10000
+total_fee = 0
+raw_fee = 0
 details = 'なし'
 
 process_end = false
