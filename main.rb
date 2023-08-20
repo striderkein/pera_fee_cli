@@ -2,6 +2,9 @@
 $base_fee_adult = 1000
 $base_fee_child = 500
 $base_fee_senior = 800
+$base_fee_adult_sp = 600
+$base_fee_child_sp = 400
+$base_fee_senior_sp = 500
 
 def clear_console
   puts "\e[H\e[2J"
@@ -40,34 +43,35 @@ def decide_fee_type()
 	end
 end
 
-def decide_fee(age_group)
+def decide_fee(age_group, is_special)
 	discount_amount_mon_wed = 100
 	discount_amount_night = 100
 	increase_amount_holiday = 200
-	base_fee = age_group == 'adult' ? $base_fee_adult : age_group == 'child' ? $base_fee_child : $base_fee_senior
+	# base_fee = age_group == 'adult' ? $base_fee_adult : age_group == 'child' ? $base_fee_child : $base_fee_senior
+	fee = age_group == 'adult' ? (is_special ? $base_fee_adult_sp : $base_fee_adult) : age_group == 'child' ? (is_special ? $base_fee_child_sp : $base_fee_child) : (is_special ? $base_fee_senior_sp : $base_fee_senior)
 
 	discount_type = decide_fee_type()
 	if discount_type == 'holiday' then
-		return base_fee + increase_amount_holiday
+		return fee + increase_amount_holiday
 	elsif discount_type == 'mon_wed' then
-		return base_fee - discount_amount_mon_wed
+		return fee - discount_amount_mon_wed
 	elsif discount_type == 'night' then
-		return base_fee - discount_amount_night
+		return fee - discount_amount_night
 	else
-		return base_fee
+		return fee
 	end
 end
 
-GROUP_DISCONT_RATE = 0.9
+GROUP_DISCOUNT_RATE = 0.9
 
-fee_adult = decide_fee('adult')
-fee_adult_sp = 600
+fee_adult = decide_fee('adult', false)
+fee_adult_sp = decide_fee('adult', true)
 DISCOUNT_ADULT_DECIDED = fee_adult - fee_adult_sp
-fee_child = decide_fee('child')
-fee_child_sp = 400
+fee_child = decide_fee('child', false)
+fee_child_sp = decide_fee('child', true)
 DISCOUNT_CHILD_DECIDED = fee_child - fee_child_sp
-fee_senior = decide_fee('senior')
-fee_senior_sp = 500
+fee_senior = decide_fee('senior', false)
+fee_senior_sp = decide_fee('senior', true)
 DISCOUNT_SENIOR_DECIDED = fee_senior - fee_senior_sp
 
 total_fee = 0
@@ -167,27 +171,38 @@ while !process_end
 	total_person_for_discount = adult_normal.to_i + child_normal.to_i / 2 + senior_normal.to_i
 	is_group_discount = total_person_for_discount >= 10
 
-	raw_base_fee_adult = adult_normal.to_i * $base_fee_adult
-	raw_base_fee_child = child_normal.to_i * $base_fee_child
-	raw_base_fee_senior = senior_normal.to_i * $base_fee_senior
-	raw_fee_adult = adult_normal.to_i * fee_adult
-	raw_fee_child = child_normal.to_i * fee_child
-	raw_fee_senior = senior_normal.to_i * fee_senior
+	# raw_base_fee_adult = adult_normal.to_i * $base_fee_adult
+	# raw_base_fee_child = child_normal.to_i * $base_fee_child
+	# raw_base_fee_senior = senior_normal.to_i * $base_fee_senior
+	# 「入力された数値」×「チケット料金」で…
+	# 「通常」の料金の合計を計算
+	raw_fee_adult = adult_special.to_i * fee_adult_sp + (adult_normal.to_i - adult_special.to_i) * fee_adult
+	raw_fee_child = child_special.to_i * fee_child_sp + (child_normal.to_i - child_special.to_i) * fee_child
+	raw_fee_senior = senior_special.to_i * fee_senior_sp + (senior_normal.to_i - senior_special.to_i) * fee_senior
+	# 「特別」の料金の合計を計算
+	# raw_fee_adult_sp = adult_special.to_i * fee_adult_sp
+	# raw_fee_child_sp = child_special.to_i * fee_child_sp
+	# raw_fee_senior_sp = senior_special.to_i * fee_senior_sp
 	discount_adult_total = adult_special.to_i * DISCOUNT_ADULT_DECIDED
 	discount_child_total = child_special.to_i * DISCOUNT_CHILD_DECIDED
 	discount_senior_total = senior_special.to_i * DISCOUNT_SENIOR_DECIDED
 	# TODO: 全てのチケット料金を計算して、変数total_feeに代入
 	total_fee =
-		raw_fee_adult - discount_adult_total +
-		raw_fee_child - discount_child_total +
-		raw_fee_senior - discount_senior_total
+		# raw_fee_adult - discount_adult_total +
+		# raw_fee_child - discount_child_total +
+		# raw_fee_senior - discount_senior_total
+		raw_fee_adult +
+		raw_fee_child +
+		raw_fee_senior 
+
 	# raw_fee = total_fee
-	raw_fee = raw_base_fee_adult + raw_base_fee_child + raw_base_fee_senior
+	# raw_fee = raw_fee_adult + raw_fee_child + raw_fee_senior + raw_fee_adult_sp + raw_fee_child_sp + raw_fee_senior_sp
+	raw_fee = raw_fee_adult + raw_fee_child + raw_fee_senior
 
 	# 割引の計算
-	if !is_night() then
+	if !is_night() && !is_holiday() && !is_mon_wed() then
 		if is_group_discount then
-			total_fee *= GROUP_DISCONT_RATE
+			total_fee *= GROUP_DISCOUNT_RATE
 		end
 	end
 
@@ -195,6 +210,8 @@ while !process_end
 	# puts "大人:#{adult_normal}\n子供:#{child_normal}\nシニア:#{senior_normal}\n大人（特別）:#{adult_special}\n子供（特別）:#{child_special}\nシニア（特別）:#{senior_special}"
 	# TODO: impl
 	puts "合計人数:#{total_person} 名"
+	puts "合計人数（通常）:#{total_person - (adult_special.to_i + child_special.to_i + senior_special.to_i)} 名"
+	puts "合計人数（特別）:#{adult_special.to_i + child_special.to_i + senior_special.to_i} 名"
 	puts "団体割引:#{is_group_discount}"
 	puts "その他割引・割増:#{decide_fee_type()}"
 	puts "販売合計金額:#{total_fee}"
