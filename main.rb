@@ -2,6 +2,7 @@
 # puts 'hello(put)' # 改行ありで出力
 # p 'hello(p)' # デバッグ用出力（データ形式がわかる）
 
+# TODO: JSON ファイルを読み込む
 # 定数
 fee_adult = 1000
 fee_adult_sp = 600
@@ -48,8 +49,6 @@ while !process_end
 	# TODO: 現在時刻を取得して、変数nowに代入 → now = Time.now
 
 	# TODO: 全てのチケット料金を計算して、変数total_feeに代入
-	# total_fee = adult_normal.to_i * fee_adult + adult_special.to_i * fee_adult_sp + child_normal.to_i * fee_child + child_special.to_i * fee_child_sp + senior_normal.to_i * fee_senior + senior_special.to_i * fee_senior_sp
-	# total_fee = adult_normal.to_i * fee_adult + adult_special.to_i * dicount_adult + child_normal.to_i * fee_child + child_special.to_i * dicount_child + senior_normal.to_i * fee_senior + senior_special.to_i * dicount_senior
 	total_fee = adult_normal.to_i * fee_adult - adult_special.to_i * dicount_adult + child_normal.to_i * fee_child - child_special.to_i * dicount_child + senior_normal.to_i * fee_senior - senior_special.to_i * dicount_senior
 	raw_fee = total_fee
 
