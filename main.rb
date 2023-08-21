@@ -10,8 +10,8 @@ def clear_console
   puts "\e[H\e[2J"
 end
 
-def is_not_number(str)
-  return str.match(/[^0-9]+/)
+def is_number(str)
+  return str.match?(/^[0-9]+$/)
 end
 
 def is_night()
@@ -89,7 +89,7 @@ while !process_end
   while true
     print '大人の人数を入力> '
     adult_normal = gets.chomp
-    if is_not_number(adult_normal) then
+    if !is_number(adult_normal) then
       puts '数値を入力してください'
       next
     else
@@ -102,7 +102,7 @@ while !process_end
   while true
     print 'チラシの枚数（大人）を入力> '
     adult_special = gets.chomp
-    if is_not_number(adult_special) then
+    if !is_number(adult_special) then
       puts '数値を入力してください'
       next
     else
@@ -116,7 +116,7 @@ while !process_end
   while true
     print '子供の人数を入力> '
     child_normal = gets.chomp
-    if is_not_number(child_normal) then
+    if !is_number(child_normal) then
       puts '数値を入力してください'
       next
     else
@@ -129,7 +129,7 @@ while !process_end
   while true
     print 'チラシの枚数（子供）を入力> '
     child_special = gets.chomp
-    if is_not_number(child_special) then
+    if !is_number(child_special) then
       puts '数値を入力してください'
       next
     else
@@ -143,7 +143,7 @@ while !process_end
   while true
     print 'シニアの人数を入力> '
     senior_normal = gets.chomp
-    if is_not_number(senior_normal) then
+    if !is_number(senior_normal) then
       puts '数値を入力してください'
       next
     else
@@ -156,7 +156,7 @@ while !process_end
   while true
     print 'チラシの枚数（シニア）を入力> '
     senior_special = gets.chomp
-    if is_not_number(senior_special) then
+    if !is_number(senior_special) then
       puts '数値を入力してください'
       next
     else
