@@ -58,6 +58,22 @@ class MainTest < Minitest::Test
       assert_equal 400, decide_fee('senior', true)
     end
 
+    # 休日（土日）割増
+    Time.stub(:now, Time.new(2023, 8, 20, 10, 0, 0)) do # 日曜日
+      # 大人（通常）
+      assert_equal 1200, decide_fee('adult', false)
+      # 子供（通常）
+      assert_equal 700, decide_fee('child', false)
+      # シニア（通常）
+      assert_equal 1000, decide_fee('senior', false)
+      # 大人（特別）
+      assert_equal 800, decide_fee('adult', true)
+      # 子供（特別）
+      assert_equal 600, decide_fee('child', true)
+      # シニア（特別）
+      assert_equal 700, decide_fee('senior', true)
+    end
+
     # 月水割（仮）
     Time.stub(:now, Time.new(2023, 8, 23, 10, 0, 0)) do
       # 大人（通常）
