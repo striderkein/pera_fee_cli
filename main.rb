@@ -184,14 +184,14 @@ while !process_end
   # raw_fee_adult_sp = adult_special.to_i * fee_adult_sp
   # raw_fee_child_sp = child_special.to_i * fee_child_sp
   # raw_fee_senior_sp = senior_special.to_i * fee_senior_sp
-  discount_adult_total = adult_special.to_i * DISCOUNT_ADULT_DECIDED
-  discount_child_total = child_special.to_i * DISCOUNT_CHILD_DECIDED
-  discount_senior_total = senior_special.to_i * DISCOUNT_SENIOR_DECIDED
+  discount_amount_adult_total = adult_special.to_i * DISCOUNT_ADULT_DECIDED
+  discount_amount_child_total = child_special.to_i * DISCOUNT_CHILD_DECIDED
+  discount_amount_senior_total = senior_special.to_i * DISCOUNT_SENIOR_DECIDED
   # TODO: 全てのチケット料金を計算して、変数total_feeに代入
   total_fee =
-    # raw_fee_adult - discount_adult_total +
-    # raw_fee_child - discount_child_total +
-    # raw_fee_senior - discount_senior_total
+    # raw_fee_adult - discount_amount_adult_total +
+    # raw_fee_child - discount_amount_child_total +
+    # raw_fee_senior - discount_amount_senior_total
     raw_fee_adult +
     raw_fee_child +
     raw_fee_senior 
@@ -207,7 +207,7 @@ while !process_end
     end
   end
 
-  details = "|        |   通常   |   割引   |   割増   |\n+--------+----------+----------+\n|  大人  |  #{adult_normal} 名様 |  ￥#{discount_adult_total}  |\n|  子供  |  #{child_normal} 名様 |  ￥#{discount_child_total}  |\n| シニア |  #{senior_normal} 名様 |  ￥#{discount_senior_total}  |\n+--------+----------+----------+"
+  details = "|        |   通常   |   割引   |   割増   |\n+--------+----------+----------+\n|  大人  |  #{adult_normal} 名様 |  ￥#{discount_amount_adult_total}  |\n|  子供  |  #{child_normal} 名様 |  ￥#{discount_amount_child_total}  |\n| シニア |  #{senior_normal} 名様 |  ￥#{discount_amount_senior_total}  |\n+--------+----------+----------+"
   # puts "大人:#{adult_normal}\n子供:#{child_normal}\nシニア:#{senior_normal}\n大人（特別）:#{adult_special}\n子供（特別）:#{child_special}\nシニア（特別）:#{senior_special}"
   # TODO: impl
   puts "合計人数:#{total_person} 名"
