@@ -167,7 +167,8 @@ while !process_end
   clear_console()
 
   total_person = adult_normal.to_i + child_normal.to_i + senior_normal.to_i
-  # 団体割引 → 10人以上で10%割引（子供は 0.5 人換算とする）
+  # 仕様: 団体割引 → 10人以上で10%割引（子供は 0.5 人換算とする）
+  # 上記を計算するため「子供は 0.5 人」と換算した人数を（総合計人数とは別に）計算する
   total_person_for_discount = adult_normal.to_i + child_normal.to_i / 2 + senior_normal.to_i
   is_group_discount = total_person_for_discount >= 10
 
