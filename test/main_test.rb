@@ -90,4 +90,38 @@ class MainTest < Minitest::Test
       assert_equal 400, decide_fee('senior', true)
     end
   end
+
+  def test_calc_total_fee
+    # 団体割引（仮）
+    Time.stub(:now, Time.new(2023, 8, 22, 10, 0, 0)) do # 平日
+      assert_equal 9000, calc_total_fee(10, 0, 0, 10000)
+      assert_equal 5000, calc_total_fee(0, 10, 0, 5000) # 子供は 0.5 人換算なので団体割引にならない
+      assert_equal 7200, calc_total_fee(0, 0, 10, 8000)
+      assert_equal 13500, calc_total_fee(10, 10, 10, 15000)
+    end
+
+    # ナイト割（仮） -> 団体割引との併用は不可
+    Time.stub(:now, Time.new(2023, 8, 22, 17, 0, 0)) do
+      assert_equal 9000, calc_total_fee(10, 0, 0, 9000)
+      assert_equal 4000, calc_total_fee(0, 10, 0, 4000)
+      assert_equal 7000, calc_total_fee(0, 0, 10, 7000)
+      assert_equal 13500, calc_total_fee(10, 10, 10, 13500)
+    end
+
+    # 休日（土日）割増 -> 団体割引との併用は不可
+    Time.stub(:now, Time.new(2023, 8, 20, 10, 0, 0)) do # 日曜日
+      assert_equal 12000, calc_total_fee(10, 0, 0, 12000)
+      assert_equal 7000, calc_total_fee(0, 10, 0, 7000)
+      assert_equal 10000, calc_total_fee(0, 0, 10, 10000)
+      assert_equal 21000, calc_total_fee(10, 10, 10, 21000)
+    end
+
+    # 月水割（仮） -> 団体割引との併用は不可
+    Time.stub(:now, Time.new(2023, 8, 23, 10, 0, 0)) do
+      assert_equal 9000, calc_total_fee(10, 0, 0, 9000)
+      assert_equal 4000, calc_total_fee(0, 10, 0, 4000)
+      assert_equal 7000, calc_total_fee(0, 0, 10, 7000)
+      assert_equal 13500, calc_total_fee(10, 10, 10, 13500)
+    end
+  end
 end
