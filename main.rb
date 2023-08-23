@@ -57,8 +57,7 @@ def decide_fee(age_group, is_special)
   discount_amount_mon_wed = 100
   discount_amount_night = 100
   increase_amount_holiday = 200
-  # base_fee = age_group == 'adult' ? $base_fee_adult : age_group == 'child' ? $base_fee_child : $base_fee_senior
-  fee = age_group == 'adult' ? (is_special ? $base_fee_adult_sp : $base_fee_adult) : age_group == 'child' ? (is_special ? $base_fee_child_sp : $base_fee_child) : (is_special ? $base_fee_senior_sp : $base_fee_senior)
+  fee = is_special ? base_fee_sp(age_group) : base_fee(age_group)
 
   discount_type = decide_fee_type()
   if discount_type == 'holiday' then
