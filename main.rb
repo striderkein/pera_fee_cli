@@ -72,10 +72,7 @@ def decide_fee(age_group, is_special)
 end
 
 def is_group_discount(total_person)
-  if !is_night() && !is_holiday() && !is_mon_wed() && total_person >= 10 then
-    return true
-  end
-  return false
+  return !is_night() && !is_holiday() && !is_mon_wed() && total_person >= 10
 end
 
 def calc_total_fee(adult_normal, child_normal, senior_normal, raw_fee)
