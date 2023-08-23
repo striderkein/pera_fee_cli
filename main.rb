@@ -75,10 +75,10 @@ def is_group_discount(total_person)
   return !is_night() && !is_holiday() && !is_mon_wed() && total_person >= 10
 end
 
-def calc_total_fee(adult_normal, child_normal, senior_normal, raw_fee)
+def calc_total_fee(number_of_visitor_adult, number_of_visitor_child, number_of_visitor_senior, raw_fee)
   # 仕様: 団体割引 → 10人以上で10%割引（子供は 0.5 人換算とする）
   # 上記を計算するため「子供は 0.5 人」と換算した人数を（総合計人数とは別に）計算する
-  total_person = adult_normal.to_i + child_normal.to_i / 2 + senior_normal.to_i
+  total_person = number_of_visitor_adult + number_of_visitor_child / 2 + number_of_visitor_senior
   if is_group_discount(total_person) then
     return raw_fee *= $group_discount_rate
   end
@@ -163,7 +163,7 @@ while !process_end
   raw_fee_total = number_of_visitor_adult.to_i * base_fee('adult') + number_of_visitor_child.to_i * base_fee('child') + number_of_visitor_senior.to_i * base_fee('senior')
 
   # 全てのチケット料金を計算して、変数total_feeに代入
-  total_fee = calc_total_fee(number_of_visitor_adult, number_of_visitor_child, number_of_visitor_senior, raw_fee_total)
+  total_fee = calc_total_fee(number_of_visitor_adult.to_i, number_of_visitor_child.to_i, number_of_visitor_senior.to_i, raw_fee_total)
 
   details = "|        |   入場人数（通常）   |   入場人数（特別）   |   割引合計   |   割増合計   |\n+--------+----------+----------+\n|  大人  |  #{number_of_visitor_adult} 名様 |  #{number_of_coupon_adult} 名様 |  ￥#{discount_amount_adult_total}  |\n|  子供  |  #{number_of_visitor_child} 名様 |  ￥#{discount_amount_child_total}  |\n| シニア |  #{number_of_visitor_senior} 名様 |  ￥#{discount_amount_senior_total}  |\n+--------+----------+----------+"
   puts "合計人数:#{total_person} 名"
