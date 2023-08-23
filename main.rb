@@ -45,6 +45,14 @@ def decide_fee_type()
   end
 end
 
+def base_fee(age_group)
+  return age_group == 'adult' ? $base_fee_adult : age_group == 'child' ? $base_fee_child : $base_fee_senior
+end
+
+def base_fee_sp(age_group)
+  return age_group == 'adult' ? $base_fee_adult_sp : age_group == 'child' ? $base_fee_child_sp : $base_fee_senior_sp
+end
+
 def decide_fee(age_group, is_special)
   discount_amount_mon_wed = 100
   discount_amount_night = 100
@@ -91,6 +99,12 @@ fee_senior = decide_fee('senior', false)
 fee_senior_sp = decide_fee('senior', true)
 DISCOUNT_SENIOR_DECIDED = fee_senior - fee_senior_sp
 
+paremeters = [
+  { "age_type" => { "ja" => "大人", "en" => "adult" } },
+  { "age_type" => { "ja" => "子供", "en" => "child" } },
+  { "age_type" => { "ja" => "シニア", "en" => "senior" } }
+]
+
 total_fee = 0
 raw_fee = 0
 details = ''
@@ -102,113 +116,67 @@ clear_console()
 while !process_end
   puts "########################\nチケット料金を計算します\n########################"
 
-  # 大人
-  while true
-    print '大人の人数を入力> '
-    adult_normal = gets.chomp
-    if !is_number(adult_normal) then
+  # adult, child, senior の各人数を入力
+  for parameter in paremeters do
+    print "#{parameter['age_type']['ja']}の人数を入力> "
+    while !is_number(number_of_visitors = gets.chomp) do
       puts '数値を入力してください'
-      next
-    else
-      break
+      print "#{parameter['age_type']['ja']}の人数を入力> "
+    end
+
+    print "チラシの枚数（#{parameter['age_type']['ja']}）を入力> "
+    while !is_number(number_of_coupons = gets.chomp) do
+      puts '数値を入力してください'
+      print "チラシの枚数（#{parameter['age_type']['ja']}）を入力> "
+    end
+    if parameter['age_type']['en'] == 'adult' then
+      number_of_visitor_adult = number_of_visitors
+      number_of_coupon_adult = number_of_coupons
+    elsif parameter['age_type']['en'] == 'child' then
+      number_of_visitor_child = number_of_visitors
+      number_of_coupon_child = number_of_coupons
+    elsif parameter['age_type']['en'] == 'senior' then
+      number_of_visitor_senior = number_of_visitors
+      number_of_coupon_senior = number_of_coupons
     end
   end
 
   clear_console()
 
-  while true
-    print 'チラシの枚数（大人）を入力> '
-    adult_special = gets.chomp
-    if !is_number(adult_special) then
-      puts '数値を入力してください'
-      next
-    else
-      break
-    end
-  end
+  total_person = number_of_visitor_adult.to_i + number_of_visitor_child.to_i + number_of_visitor_senior.to_i
 
-  clear_console()
-
-  # 子供
-  while true
-    print '子供の人数を入力> '
-    child_normal = gets.chomp
-    if !is_number(child_normal) then
-      puts '数値を入力してください'
-      next
-    else
-      break
-    end
-  end
-
-  clear_console()
-
-  while true
-    print 'チラシの枚数（子供）を入力> '
-    child_special = gets.chomp
-    if !is_number(child_special) then
-      puts '数値を入力してください'
-      next
-    else
-      break
-    end
-  end
-
-  clear_console()
-
-  # シニア
-  while true
-    print 'シニアの人数を入力> '
-    senior_normal = gets.chomp
-    if !is_number(senior_normal) then
-      puts '数値を入力してください'
-      next
-    else
-      break
-    end
-  end
-
-  clear_console()
-
-  while true
-    print 'チラシの枚数（シニア）を入力> '
-    senior_special = gets.chomp
-    if !is_number(senior_special) then
-      puts '数値を入力してください'
-      next
-    else
-      break
-    end
-  end
-
-  clear_console()
-
-  total_person = adult_normal.to_i + child_normal.to_i + senior_normal.to_i
+  # 「通常」料金の合計を計算
+  fee_adult_normal_total = (number_of_visitor_adult.to_i - number_of_coupon_adult.to_i) * base_fee('adult')
+  fee_child_normal_total = (number_of_visitor_child.to_i - number_of_coupon_child.to_i) * base_fee('child')
+  fee_senior_normal_total = (number_of_visitor_senior.to_i - number_of_coupon_senior.to_i) * base_fee('senior')
+  # 「特別」料金の合計を計算
+  fee_adult_sp_total = number_of_coupon_adult.to_i * fee_adult_sp
+  fee_child_sp_total = number_of_coupon_child.to_i * fee_child_sp
+  fee_senior_sp_total = number_of_coupon_senior.to_i * fee_senior_sp
 
   # 「入力された数値」×「チケット料金」で…
-  # 「通常」の料金の合計を計算
-  raw_fee_adult = adult_special.to_i * fee_adult_sp + (adult_normal.to_i - adult_special.to_i) * fee_adult
-  raw_fee_child = child_special.to_i * fee_child_sp + (child_normal.to_i - child_special.to_i) * fee_child
-  raw_fee_senior = senior_special.to_i * fee_senior_sp + (senior_normal.to_i - senior_special.to_i) * fee_senior
-  # 「特別」の料金の合計を計算
-  discount_amount_adult_total = adult_special.to_i * DISCOUNT_ADULT_DECIDED
-  discount_amount_child_total = child_special.to_i * DISCOUNT_CHILD_DECIDED
-  discount_amount_senior_total = senior_special.to_i * DISCOUNT_SENIOR_DECIDED
-  raw_fee = raw_fee_adult + raw_fee_child + raw_fee_senior
+  # 割引前料金の合計を計算
+  raw_fee_adult = number_of_visitor_adult.to_i * fee_adult
+  raw_fee_child = number_of_visitor_child.to_i * fee_child
+  raw_fee_senior = number_of_visitor_senior.to_i * fee_senior
+  # 割引額の合計を計算
+  discount_amount_adult_total = number_of_coupon_adult.to_i * DISCOUNT_ADULT_DECIDED
+  discount_amount_child_total = number_of_coupon_child.to_i * DISCOUNT_CHILD_DECIDED
+  discount_amount_senior_total = number_of_coupon_senior.to_i * DISCOUNT_SENIOR_DECIDED
+  # raw_fee_total = raw_fee_adult + raw_fee_child + raw_fee_senior
+  raw_fee_total = number_of_visitor_adult.to_i * base_fee('adult') + number_of_visitor_child.to_i * base_fee('child') + number_of_visitor_senior.to_i * base_fee('senior')
 
   # 全てのチケット料金を計算して、変数total_feeに代入
-  total_fee = calc_total_fee(adult_normal, child_normal, senior_normal, raw_fee)
+  total_fee = calc_total_fee(number_of_visitor_adult, number_of_visitor_child, number_of_visitor_senior, raw_fee_total)
 
-  details = "|        |   通常   |   割引   |   割増   |\n+--------+----------+----------+\n|  大人  |  #{adult_normal} 名様 |  ￥#{discount_amount_adult_total}  |\n|  子供  |  #{child_normal} 名様 |  ￥#{discount_amount_child_total}  |\n| シニア |  #{senior_normal} 名様 |  ￥#{discount_amount_senior_total}  |\n+--------+----------+----------+"
-  # puts "大人:#{adult_normal}\n子供:#{child_normal}\nシニア:#{senior_normal}\n大人（特別）:#{adult_special}\n子供（特別）:#{child_special}\nシニア（特別）:#{senior_special}"
-  # TODO: impl
+  details = "|        |   入場人数（通常）   |   入場人数（特別）   |   割引合計   |   割増合計   |\n+--------+----------+----------+\n|  大人  |  #{number_of_visitor_adult} 名様 |  #{number_of_coupon_adult} 名様 |  ￥#{discount_amount_adult_total}  |\n|  子供  |  #{number_of_visitor_child} 名様 |  ￥#{discount_amount_child_total}  |\n| シニア |  #{number_of_visitor_senior} 名様 |  ￥#{discount_amount_senior_total}  |\n+--------+----------+----------+"
   puts "合計人数:#{total_person} 名"
-  puts "合計人数（通常）:#{total_person - (adult_special.to_i + child_special.to_i + senior_special.to_i)} 名"
-  puts "合計人数（特別）:#{adult_special.to_i + child_special.to_i + senior_special.to_i} 名"
+  puts "合計人数（通常）:#{total_person - (number_of_coupon_adult.to_i + number_of_coupon_child.to_i + number_of_coupon_senior.to_i)} 名"
+  puts "合計人数（特別）:#{number_of_coupon_adult.to_i + number_of_coupon_child.to_i + number_of_coupon_senior.to_i} 名"
   puts "団体割引:#{is_group_discount(total_person)}"
   puts "その他割引・割増:#{decide_fee_type()}"
   puts "販売合計金額:#{total_fee}"
-  puts "金額変更前合計金額:#{raw_fee}"
+  puts "金額変更前合計金額:#{raw_fee_total}"
   puts "金額変更明細:\n#{details}\n"
 
   while true
