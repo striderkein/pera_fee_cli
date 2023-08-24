@@ -100,7 +100,7 @@ class Admission
   end
 
   # @reuurn [Integer] 団体割引適用の根拠とするための総合計人数（子供を 0.5 人とカウント）
-  def total_visitors_for_group_discont()
+  def total_visitors_for_group_discount()
     # 仕様: 団体割引 → 10人以上で10%割引（子供は 0.5 人換算とする）
     # 上記を計算するため「子供は 0.5 人」と換算した人数を（総合計人数とは別に）計算する
     return number_of_visitor_adult.to_i + number_of_visitor_child.to_i / 2 + number_of_visitor_senior.to_i
@@ -156,7 +156,7 @@ class Admission
     elsif age_type == 'senior' then
       return fee.senior_sp_decided * self.total_special_visitors(age_type)
     end
-    return fee.fee_adult_sp * self.total_special_visitors('adult') + fee.fee_child_sp * self.total_special_visitors('child') + fee.fee_senior_sp * self.total_special_visitors('senior')
+    return fee.adult_sp_decided * self.total_special_visitors('adult') + fee.child_sp_decided * self.total_special_visitors('child') + fee.senior_sp_decided * self.total_special_visitors('senior')
   end
 
   def total_change_amount(age_type)
@@ -177,11 +177,11 @@ class Admission
   end
 
   def total_discount_amount_formatted(age_type)
-    total_change = self.total_change_amount(age_type)
+    total_change = self.total_change_amount(age_type).to_i
     if total_change > 0 then
-      return total_change.to_s.rjust(6)
+      return "￥#{total_change.to_s.rjust(6)}"
     end
-    return '0'.rjust(6)
+    return "￥#{'0'.rjust(6)}"
   end
 
   def total_surcharge_amount_formatted(age_type)
@@ -230,7 +230,7 @@ class Admission
 
   def is_group_discount()
     # 仕様: 団体割引とその他割引の併用はできない
-    if fee.price_change_type() == 'nodiscount' && self.total_visitors_for_group_discont() >= 10 then
+    if fee.price_change_type() == 'nodiscount' && self.total_visitors_for_group_discount() >= 10 then
       return true
     end
     return false
@@ -301,7 +301,7 @@ while !process_end
   surcharge_amount_child_total = admission.total_surcharge_amount_formatted('child')
   surcharge_amount_senior_total = admission.total_surcharge_amount_formatted('senior')
 
-  details = "|        | 入場人数（通常） | 入場人数（特別） |  割引合計  |  割増合計  |\n+--------+------------------+------------------+------------+------------+\n|  大人  | #{admission.total_normal_visitors_formatted('adult')}  | #{admission.total_special_visitors_formatted('adult')}  |  ￥#{discount_amount_adult_total}  |  ￥#{surcharge_amount_adult_total}  |\n|  子供  | #{admission.total_normal_visitors_formatted('child')}  | #{admission.total_special_visitors_formatted('child')}  |  ￥#{discount_amount_child_total}  |  ￥#{surcharge_amount_child_total}  |\n| シニア | #{admission.total_normal_visitors_formatted('senior')}  | #{admission.total_special_visitors_formatted('senior')}  |  ￥#{discount_amount_senior_total}  |  ￥#{surcharge_amount_senior_total}  |\n+--------+------------------+------------------+------------+------------+"
+  details = "|        | 入場人数（通常） | 入場人数（特別） |  割引合計  |  割増合計  |\n+--------+------------------+------------------+------------+------------+\n|  大人  | #{admission.total_normal_visitors_formatted('adult')}  | #{admission.total_special_visitors_formatted('adult')}  |  #{discount_amount_adult_total}  |  ￥#{surcharge_amount_adult_total}  |\n|  子供  | #{admission.total_normal_visitors_formatted('child')}  | #{admission.total_special_visitors_formatted('child')}  |  #{discount_amount_child_total}  |  ￥#{surcharge_amount_child_total}  |\n| シニア | #{admission.total_normal_visitors_formatted('senior')}  | #{admission.total_special_visitors_formatted('senior')}  |  #{discount_amount_senior_total}  |  ￥#{surcharge_amount_senior_total}  |\n+--------+------------------+------------------+------------+------------+"
   puts "合計人数:#{admission.total_visitors()} 名"
   puts "合計人数（通常）:#{admission.total_normal_visitors(nil)} 名"
   puts "合計人数（特別）:#{admission.total_special_visitors(nil)} 名"
