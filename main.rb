@@ -25,18 +25,6 @@ class Fee
     @price_change_type = price_change_type()
   end
 
-  def is_night()
-    return Time.now.hour >= 17
-  end
-
-  def is_holiday()
-    return Time.now.wday == 0 || Time.now.wday == 6
-  end
-
-  def is_mon_wed()
-    return Time.now.wday == 1 || Time.now.wday == 3
-  end
-
   def base_fee(age_type)
     return age_type == 'adult' ? $base_fee_adult : age_type == 'child' ? $base_fee_child : $base_fee_senior
   end
