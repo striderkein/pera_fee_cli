@@ -294,11 +294,8 @@ while !process_end
   # オペレーターからの入力をパラメータとして Admission クラスのインスタンスを生成
   admission = Admission.new(number_of_visitor_adult, number_of_visitor_child, number_of_visitor_senior, number_of_coupon_adult, number_of_coupon_child, number_of_coupon_senior, fee)
 
-  discount_amount_adult_total = admission.total_discount_amount_formatted('adult')
-  discount_amount_child_total = admission.total_discount_amount_formatted('child')
-  discount_amount_senior_total = admission.total_discount_amount_formatted('senior')
 
-  details = "|        | 入場人数（通常） | 入場人数（特別） |  割引合計  |  割増合計  |\n+--------+------------------+------------------+------------+------------+\n|  大人  | #{admission.total_normal_visitors_formatted('adult')}  | #{admission.total_special_visitors_formatted('adult')}  |  #{discount_amount_adult_total}  |  ￥#{admission.total_surcharge_amount_formatted('adult')}  |\n|  子供  | #{admission.total_normal_visitors_formatted('child')}  | #{admission.total_special_visitors_formatted('child')}  |  #{discount_amount_child_total}  |  #{admission.total_surcharge_amount_formatted('child')}  |\n| シニア | #{admission.total_normal_visitors_formatted('senior')}  | #{admission.total_special_visitors_formatted('senior')}  |  #{discount_amount_senior_total}  |  #{admission.total_surcharge_amount_formatted('senior')}  |\n+--------+------------------+------------------+------------+------------+"
+  details = "|        | 入場人数（通常） | 入場人数（特別） |  割引合計  |  割増合計  |\n+--------+------------------+------------------+------------+------------+\n|  大人  | #{admission.total_normal_visitors_formatted('adult')}  | #{admission.total_special_visitors_formatted('adult')}  |  #{admission.total_discount_amount_formatted('adult')}  |  #{admission.total_surcharge_amount_formatted('adult')}  |\n|  子供  | #{admission.total_normal_visitors_formatted('child')}  | #{admission.total_special_visitors_formatted('child')}  |  #{admission.total_discount_amount_formatted('child')}  |  #{admission.total_surcharge_amount_formatted('child')}  |\n| シニア | #{admission.total_normal_visitors_formatted('senior')}  | #{admission.total_special_visitors_formatted('senior')}  |  #{admission.total_discount_amount_formatted('senior')}  |  #{admission.total_surcharge_amount_formatted('senior')}  |\n+--------+------------------+------------------+------------+------------+"
   puts "合計人数:#{admission.total_visitors()} 名"
   puts "合計人数（通常）:#{admission.total_normal_visitors(nil)} 名"
   puts "合計人数（特別）:#{admission.total_special_visitors(nil)} 名"
