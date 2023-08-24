@@ -245,6 +245,13 @@ def is_number(str)
   return str.match?(/^[0-9]+$/)
 end
 
+def validate_coupon(input, visitors)
+  if is_number(input) && input.to_i <= visitors.to_i then
+    return true
+  end
+  return false
+end
+
 paremeters = [
   { "age_type" => { "ja" => "大人", "en" => "adult" } },
   { "age_type" => { "ja" => "子供", "en" => "child" } },
@@ -271,8 +278,8 @@ while !process_end
     end
 
     print "チラシの枚数（#{parameter['age_type']['ja']}）を入力> "
-    while !is_number(number_of_coupons = gets.chomp) do
-      puts '数値を入力してください'
+    while !validate_coupon(number_of_coupons = gets.chomp, number_of_visitors) do
+      puts '人数より少ない数値を入力してください'
       print "チラシの枚数（#{parameter['age_type']['ja']}）を入力> "
     end
     if parameter['age_type']['en'] == 'adult' then
