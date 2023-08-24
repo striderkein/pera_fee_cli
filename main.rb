@@ -187,9 +187,9 @@ class Admission
   def total_surcharge_amount_formatted(age_type)
     total_change = self.total_change_amount(age_type)
     if total_change < 0 then
-      return total_change.to_s.rjust(6)
+      return "￥#{(total_change *= -1).to_s.rjust(6)}"
     end
-    return '0'.rjust(6)
+    return "￥#{'0'.rjust(6)}"
   end
 
   def base_fee_total()
@@ -297,11 +297,8 @@ while !process_end
   discount_amount_adult_total = admission.total_discount_amount_formatted('adult')
   discount_amount_child_total = admission.total_discount_amount_formatted('child')
   discount_amount_senior_total = admission.total_discount_amount_formatted('senior')
-  surcharge_amount_adult_total = admission.total_surcharge_amount_formatted('adult')
-  surcharge_amount_child_total = admission.total_surcharge_amount_formatted('child')
-  surcharge_amount_senior_total = admission.total_surcharge_amount_formatted('senior')
 
-  details = "|        | 入場人数（通常） | 入場人数（特別） |  割引合計  |  割増合計  |\n+--------+------------------+------------------+------------+------------+\n|  大人  | #{admission.total_normal_visitors_formatted('adult')}  | #{admission.total_special_visitors_formatted('adult')}  |  #{discount_amount_adult_total}  |  ￥#{surcharge_amount_adult_total}  |\n|  子供  | #{admission.total_normal_visitors_formatted('child')}  | #{admission.total_special_visitors_formatted('child')}  |  #{discount_amount_child_total}  |  ￥#{surcharge_amount_child_total}  |\n| シニア | #{admission.total_normal_visitors_formatted('senior')}  | #{admission.total_special_visitors_formatted('senior')}  |  #{discount_amount_senior_total}  |  ￥#{surcharge_amount_senior_total}  |\n+--------+------------------+------------------+------------+------------+"
+  details = "|        | 入場人数（通常） | 入場人数（特別） |  割引合計  |  割増合計  |\n+--------+------------------+------------------+------------+------------+\n|  大人  | #{admission.total_normal_visitors_formatted('adult')}  | #{admission.total_special_visitors_formatted('adult')}  |  #{discount_amount_adult_total}  |  ￥#{admission.total_surcharge_amount_formatted('adult')}  |\n|  子供  | #{admission.total_normal_visitors_formatted('child')}  | #{admission.total_special_visitors_formatted('child')}  |  #{discount_amount_child_total}  |  #{admission.total_surcharge_amount_formatted('child')}  |\n| シニア | #{admission.total_normal_visitors_formatted('senior')}  | #{admission.total_special_visitors_formatted('senior')}  |  #{discount_amount_senior_total}  |  #{admission.total_surcharge_amount_formatted('senior')}  |\n+--------+------------------+------------------+------------+------------+"
   puts "合計人数:#{admission.total_visitors()} 名"
   puts "合計人数（通常）:#{admission.total_normal_visitors(nil)} 名"
   puts "合計人数（特別）:#{admission.total_special_visitors(nil)} 名"

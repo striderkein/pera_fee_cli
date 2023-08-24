@@ -428,6 +428,16 @@ class MainTest < Minitest::Test
     end
   end
 
+  def test_total_surcharge_amount_formatted
+    # 土日・祝日の昼間
+    Time.stub(:now, Time.new(2023, 8, 20, 10, 0, 0)) do # 日曜日
+      fee = Fee.new(1000, 500, 800, 600, 400, 500)
+
+      admission = Admission.new(9, 0, 0, 0, 0, 0, fee)
+      assert_equal '￥  1800', admission.total_surcharge_amount_formatted('adult')
+    end
+  end
+
   # def test_calc_total_fee
   #   # 団体割引（仮）
   #   Time.stub(:now, Time.new(2023, 8, 22, 10, 0, 0)) do # 平日
